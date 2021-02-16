@@ -1,0 +1,21 @@
+keyword:
+	keyword: Drink
+	match: Drink <atom-param>number</atom-param>
+	reminder: 
+	rules: 
+	mode: pseudo
+keyword:
+	keyword: Drink
+	match: Drinks <atom-param>number</atom-param>
+	reminder: 
+	rules: 
+	mode: pseudo
+keyword:
+	keyword: Drinkycling
+	match: Drinkcycling <atom-param>cost</atom-param>
+	reminder: Drink {param1}, Discard this card: Draw a card.
+	rules: 
+	mode: expert
+version control:
+	type: none
+apprentice code: 

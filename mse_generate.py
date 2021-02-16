@@ -24,6 +24,8 @@ def generate_mse_set(cards: List[Card]):
 
 	for card in cards:
 		full_text += card.generate_mse_card()
+	with open('mse_footer.txt', 'r', encoding='UTF-8') as read_obj:
+		full_text += "\n" + read_obj.read()
 	return full_text
 
 
