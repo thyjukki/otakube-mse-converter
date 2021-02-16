@@ -55,15 +55,17 @@ card:
 	super type: <word-list-type>{' '.join(self.super_types)}</word-list-type>
 	sub type: <word-list-race>{' '.join(self.sub_types)}</word-list-race>
 	rarity: {self.rarity}
-	rule text:
-		{self.rules_text}		
-	flavor text: <i-flavor>{self.flavor_text}</i-flavor>"""
+	rule text:\n"""
+		for line in self.rules_text.split('\n'):
+			text += f"		{line.strip()}\n"
+		text += f"""	flavor text: <i-flavor>{self.flavor_text}</i-flavor>"""
 		if self.power and self.toughness:
 			text += f"""
 	power: {self.power}
 	toughness: {self.toughness}"""
 
 		text += f"""
+	custom card number: {self.id}
 	card code text: 
 	illustrator:
 		{self.creator}
