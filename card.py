@@ -195,7 +195,7 @@ card:"""
 
 		if self.sub_types2:
 			text += f"""
-	sub type 2: {get_sub_type_text(self.sub_types2, self.sub_types2)}"""
+	sub type 2: {get_sub_type_text(self.super_types2, self.sub_types2)}"""
 
 		if self.rules_text2:
 			text += f"""
