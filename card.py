@@ -55,6 +55,12 @@ class Card():
 			element = 'word-list-artifact'
 
 		return f"<{element}>{' '.join(self.sub_types)}</{element}>"
+
+	
+	def get_flavor_text(self):
+		parsed_string = ' '.join(self.flavor_text.split('\n'))
+		return f"<i-flavor>{parsed_string}</i-flavor>"
+
 	def generate_mse_card(self):
 
 		text = f"""
@@ -72,10 +78,7 @@ card:
 	rule text:\n"""
 		for line in self.rules_text.split('\n'):
 			text += f"		{line.strip()}\n"
-		text += f"""	flavor text: <i-flavor>"""
-		for line in self.flavor_text.split('\n'):
-			text += f"\n		{line.strip()}"
-		text += f"""</i-flavor>"""
+		text += f"""	flavor text: {self.get_flavor_text()}"""
 		if self.power and self.toughness:
 			text += f"""
 	power: {self.power}
