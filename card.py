@@ -164,7 +164,7 @@ card:"""
 	casting cost: {self.cmc}
 	image:
 	super type: <word-list-type>{' '.join(self.super_types)}</word-list-type>
-	sub type: {get_sub_type_text(self.sub_types, self.sub_types)}
+	sub type: {get_sub_type_text(self.super_types, self.sub_types)}
 	rarity: {self.rarity}
 	rule text: {self.rules_text}
 	flavor text: {self.flavor_text}
