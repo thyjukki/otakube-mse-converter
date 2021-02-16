@@ -53,6 +53,12 @@ class Card():
 			element = 'word-list-race'
 		elif "Artifact" in self.super_types:
 			element = 'word-list-artifact'
+		elif "Instant" in self.super_types:
+			element = 'word-list-spell'
+		elif "Sorcery" in self.super_types:
+			element = 'word-list-spell'
+		elif "Planeswalker" in self.super_types:
+			element = 'word-list-planeswalker'
 
 		return f"<{element}>{' '.join(self.sub_types)}</{element}>"
 
