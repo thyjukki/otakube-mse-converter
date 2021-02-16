@@ -35,6 +35,13 @@ class Card():
 		self.rarity = entry[12]
 		self.creator = entry[13]
 
+		self.check_errors()
+
+	def check_errors(self):
+		if "Land" in self.super_types:
+			if self.cost and self.cost.strip():
+				print(f"WARNING: Land {self} with CMC! ({self.cost})")
+
 	def __repr__(self):
 			return f"Card([{self.id, self.name}])"
 
@@ -58,7 +65,10 @@ card:
 	rule text:\n"""
 		for line in self.rules_text.split('\n'):
 			text += f"		{line.strip()}\n"
-		text += f"""	flavor text: <i-flavor>{self.flavor_text}</i-flavor>"""
+		text += f"""	flavor text: <i-flavor>"""
+		for line in self.flavor_text.split('\n'):
+			text += f"\n		{line.strip()}"
+		text += f"""</i-flavor>"""
 		if self.power and self.toughness:
 			text += f"""
 	power: {self.power}
