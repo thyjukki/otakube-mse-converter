@@ -56,12 +56,25 @@ class Card():
 
 		return f"<{element}>{' '.join(self.sub_types)}</{element}>"
 
+
+	def get_card_number(self, cards_count):
+		id_len = len(str(self.id))
+		total_len = len(str(cards_count))
+		diff = total_len - id_len
+
+		if diff < 0:
+			print(f"ERROR: {self} id exedecs set card count ({cards_count})")
+			return f"nil/{cards_count}"
+		
+		return f"{'0'*diff}{self.id}/{cards_count}"
+
 	
 	def get_flavor_text(self):
 		parsed_string = ' '.join(self.flavor_text.split('\n'))
 		return f"<i-flavor>{parsed_string}</i-flavor>"
 
-	def generate_mse_card(self):
+
+	def generate_mse_card(self, cards_count):
 
 		text = f"""
 card:
@@ -85,8 +98,8 @@ card:
 	toughness: {self.toughness}"""
 
 		text += f"""
-	custom card number: {self.id}
-	card code text: 
+	custom card number: {self.get_card_number(cards_count)}
+	card code text:
 	illustrator: {self.creator}
 	copyright: 
 	image 2: 

@@ -6,6 +6,7 @@ set info:
 	description: Tyhmää ja hauskaa :D
 	symbol: 
 	masterpiece symbol: 
+	automatic card numbers: no
 	sort special rarity: separate numbering
 	mark errors: no
 styling:
