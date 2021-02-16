@@ -14,6 +14,12 @@ class Card():
 			self.power = None
 			self.toughness = None
 			return
+		if "Planeswalker" in self.super_types:
+			self.loyalty = int(raw_stat[0].strip())
+			self.power = None
+			self.toughness = None
+			return
+	
 		splits = raw_stat.split('/')
 		self.power = splits[0].strip()
 		if len(splits) > 1:
@@ -98,7 +104,7 @@ card:
 		for line in self.rules_text.split('\n'):
 			text += f"		{line.strip()}\n"
 		text += f"""	flavor text: {self.get_flavor_text()}"""
-		if self.power and self.toughness:
+		if self.power is not None and self.toughness is not None:
 			text += f"""
 	power: {self.power}
 	toughness: {self.toughness}"""
