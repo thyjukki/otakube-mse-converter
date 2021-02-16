@@ -5,7 +5,7 @@ def get_sub_type_text(super_types, sub_types):
 	elif "Creature" in super_types:
 		element = 'word-list-race'
 	elif "Enchantment" in super_types:
-		element = 'word-list-race'
+		element = 'word-list-enchantment'
 	elif "Artifact" in super_types:
 		element = 'word-list-artifact'
 	elif "Instant" in super_types:
@@ -80,7 +80,68 @@ class Card():
 		else:
 			self.cmc2 = None
 
+	def parse_saga(self, raw_rules):
+		lines = raw_rules.strip().split('\n')
+		line_count = len(lines)
+		if line_count == 2:
+			self.styling_data = '\n		chapter textboxes: two'
+		elif line_count == 3:
+			self.styling_data = '\n		chapter textboxes: three'
+		elif line_count == 4:
+			self.styling_data = '\n		chapter textboxes: four'
+
+		self.level1 = lines[0].split(':')[-1].strip()
+		self.level2 = lines[1].split(':')[-1].strip() if line_count > 1 else None
+		self.level3 = lines[2].split(':')[-1].strip() if line_count > 2 else None
+		self.level4 = lines[3].split(':')[-1].strip() if line_count > 3 else None
+
+	def parse_planeswalker(self, raw_rules):
+		lines = raw_rules.strip().split('\n')
+		line_count = len(lines)
+
+		self.level1 = lines[0].split(':')[-1].strip()
+		self.loyaly1_cost = lines[0].split(':')[0].strip()
+		if line_count > 1:
+			self.level2 = lines[1].split(':')[-1].strip()
+			self.loyaly2_cost = lines[1].split(':')[0].strip()
+		if line_count > 2:
+			self.level3 = lines[2].split(':')[-1].strip()
+			self.loyaly3_cost = lines[2].split(':')[0].strip()
+		if line_count > 3:
+			self.level4 = lines[3].split(':')[-1].strip()
+			self.loyaly4_cost = lines[3].split(':')[0].strip()
+
+	def parse_modal(self,  raw_rules):
+		lines = raw_rules.split('\n')
+		self.modal_rules = ""
+		first = True
+		for line in lines[1:]:
+			if first:
+				first = False
+				self.modal_rules += f"\n		<soft-line>{line.strip()}"
+			else:
+				self.modal_rules += f"\n		{line.strip()}"
+		self.modal_rules += '</soft-line>'
+
+			
+
 	def parse_rules(self, raw_rules):
+		if "Saga" in self.sub_types:
+			self.parse_saga(raw_rules)
+			self.rules_text = '<i-auto>(As this Saga enters and after your draw step, add a lore counter. Sacrifice after <nosym>I</nosym><nosym>I</nosym><nosym>I</nosym>.)</i-auto>'
+			return
+
+		if "Planeswalker" in self.super_types:
+			self.parse_planeswalker(raw_rules)
+			self.rules_text = '<i-auto>(As this Saga enters and after your draw step, add a lore counter. Sacrifice after <nosym>I</nosym><nosym>I</nosym><nosym>I</nosym>.)</i-auto>'
+			return
+		
+		first_line = raw_rules.split('\n')[0].strip()
+		if first_line.startswith('Choose') and first_line.endswith(':'):
+			self.parse_modal(raw_rules)
+			self.level1 = first_line
+			#return
+
 		splits = raw_rules.split('//')
 		lines = splits[0].strip().split('\n')
 		self.rules_text = '\n'.join(map(lambda x: f"		{x.strip()}", lines))
@@ -108,6 +169,17 @@ class Card():
 
 
 	def __init__(self, entry):
+		self.loyaly1_cost = None
+		self.loyaly2_cost = None
+		self.loyaly3_cost = None
+		self.loyaly4_cost = None
+		self.level1 = None
+		self.level2 = None
+		self.level3 = None
+		self.level4 = None
+		self.modal_rules = None
+		self.rules_text2 = None
+
 		self.id = int(entry[0])
 		self.parse_name(entry[1])
 		self.revision = entry[2]
@@ -147,16 +219,43 @@ card:"""
 
 		if "Planeswalker" in self.super_types:
 			text += f"""
-	stylesheet: m15-mainframe-planeswalker"""
+	stylesheet: m15-mainframe-planeswalker
+	has styling: false"""
 		elif "Saga" in self.sub_types:
 			text += f"""
-	stylesheet: m15-saga"""
+	stylesheet: m15-saga
+	has styling: true
+	styling data: {self.styling_data}
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 
+"""
+		elif "Enchantment" in self.super_types and "Creature" in self.super_types:
+			text += f"""
+	stylesheet: m15-altered
+	has styling: true
+	styling data:
+		frames: nyx
+		other options: auto nyx crowns
+"""
+		elif self.modal_rules:
+			text += f"""
+	stylesheet: m15-altered
+	has styling: true
+	styling data:
+		frames: modal
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		level mana symbols: magic-mana-large.mse-symbol-font
+		overlay: """
 		elif self.name2:
 			text += f"""
-	stylesheet: m15-split-fusable"""
+	stylesheet: m15-split-fusable
+	has styling: false"""
+		else:
+			text += f"""
+	stylesheet: m15-altered
+	has styling: false"""
 
 		text += f"""
-	has styling: false
 	notes: 
 	time created: 2019-06-02 01:47:48
 	time modified: 2019-06-02 01:50:10
@@ -167,13 +266,47 @@ card:"""
 	sub type: {get_sub_type_text(self.super_types, self.sub_types)}
 	rarity: {self.rarity}
 	rule text: {self.rules_text}
-	flavor text: {self.flavor_text}
-	power: {self.power}
-	toughness: {self.toughness}"""
+	flavor text: {self.flavor_text}"""
+	
+		if self.loyaly1_cost:
+			text += f"""
+	loyalty cost 1: {self.loyaly1_cost}"""
+		if self.level1:
+			text += f"""
+	level 1 text: {self.level1}"""
+	
+		if self.loyaly2_cost:
+			text += f"""
+	loyalty cost 2: {self.loyaly2_cost}"""
+		if self.level2:
+			text += f"""
+	level 2 text: {self.level2}"""
+	
+		if self.loyaly3_cost:
+			text += f"""
+	loyalty cost 3: {self.loyaly3_cost}"""
+		if self.level3:
+			text += f"""
+	level 3 text: {self.level3}"""
+	
+		if self.loyaly4_cost:
+			text += f"""
+	loyalty cost 4: {self.loyaly4_cost}"""
+		if self.level4:
+			text += f"""
+	level 4 text: {self.level4}"""
+
+		if self.modal_rules:
+			text += f"""
+	modal rule text: {self.modal_rules}"""
 
 		if "Planeswalker" in self.super_types:
 			text += f"""
 	loyalty: {self.loyalty}"""
+
+		text += f"""
+	power: {self.power}
+	toughness: {self.toughness}"""
 
 		text += f"""
 	custom card number: {self.get_card_number(cards_count)}
@@ -188,6 +321,9 @@ card:"""
 		if self.cmc2:
 			text += f"""
 	casting cost 2: {self.cmc2}"""
+
+		text += f"""
+	image 2: """
 
 		if self.super_types2:
 			text += f"""
@@ -206,7 +342,6 @@ card:"""
 	flavor text 2: {self.flavor_text2}"""
 
 		text += f"""
-	image 2: 
 	copyright 2: 
 	copyright 3: 
 	mainframe image: 

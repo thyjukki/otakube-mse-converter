@@ -3,13 +3,13 @@ keyword:
 	match: Drink <atom-param>number</atom-param>
 	reminder: 
 	rules: 
-	mode: pseudo
+	mode: core
 keyword:
 	keyword: Drink
 	match: Drinks <atom-param>number</atom-param>
 	reminder: 
 	rules: 
-	mode: pseudo
+	mode: core
 keyword:
 	keyword: Drinkycling
 	match: Drinkcycling <atom-param>cost</atom-param>
@@ -28,6 +28,24 @@ keyword:
 	reminder: Creatures that are Intoxicated deal damage to players in the form of drinks.
 	rules: 
 	mode: core
+keyword:
+	keyword: Living relic
+	match: Living relic
+	reminder: When this equipment enters the battlefield, put a 0/0 black Teekkari creature token onto the battlefield, then attach this to it.
+	rules: 
+	mode: expert
+keyword:
+	keyword: Section chief
+	match: Section chief
+	reminder: At the beginning of your end step, drink, then draw a card. Whenever a creature deals combat damage the Section chief, its controller becomes the Section chief. There can be only one Section chief at any given time
+	rules: 
+	mode: expert
+keyword:
+	keyword: Crowdsource
+	match: Crowdsource <atom-param>cost</atom-param>
+	reminder: Other players may help to pay for effects with Crowdsource
+	rules: 
+	mode: expert
 version control:
 	type: none
 apprentice code: 
