@@ -42,12 +42,19 @@ class Card():
 			if self.cost and self.cost.strip():
 				print(f"WARNING: Land {self} with CMC! ({self.cost})")
 
-	def __repr__(self):
-			return f"Card([{self.id, self.name}])"
 
-	def __str__(self):
-			return f"id: {self.id} name: {self.name}"
+	def get_sub_type_text(self):
+		element = ""
+		if "Land" in self.super_types:
+			element = 'word-list-land'
+		elif "Creature" in self.super_types:
+			element = 'word-list-race'
+		elif "Enchantment" in self.super_types:
+			element = 'word-list-race'
+		elif "Artifact" in self.super_types:
+			element = 'word-list-artifact'
 
+		return f"<{element}>{' '.join(self.sub_types)}</{element}>"
 	def generate_mse_card(self):
 
 		text = f"""
@@ -60,7 +67,7 @@ card:
 	casting cost: {self.cost}
 	image:
 	super type: <word-list-type>{' '.join(self.super_types)}</word-list-type>
-	sub type: <word-list-race>{' '.join(self.sub_types)}</word-list-race>
+	sub type: {self.get_sub_type_text()}
 	rarity: {self.rarity}
 	rule text:\n"""
 		for line in self.rules_text.split('\n'):
@@ -77,8 +84,7 @@ card:
 		text += f"""
 	custom card number: {self.id}
 	card code text: 
-	illustrator:
-		{self.creator}
+	illustrator: {self.creator}
 	copyright: 
 	image 2: 
 	copyright 2: 
@@ -86,3 +92,9 @@ card:
 	mainframe image: 
 	mainframe image 2:"""
 		return text
+
+	def __repr__(self):
+			return f"Card([{self.id, self.name}])"
+
+	def __str__(self):
+			return f"id: {self.id} name: {self.name}"
