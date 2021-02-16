@@ -16,6 +16,12 @@ keyword:
 	reminder: Drink {param1}, Discard this card: Draw a card.
 	rules: 
 	mode: expert
+keyword:
+	keyword: Boozetouch
+	match: Boozetouch
+	reminder: When a creature with the Boozetouch keyword deals combat damage to a player, that player drinks.
+	rules: 
+	mode: core
 version control:
 	type: none
 apprentice code: 
