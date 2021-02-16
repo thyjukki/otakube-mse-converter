@@ -139,6 +139,9 @@ class Card():
 			return
 		
 		first_line = raw_rules.split('\n')[0].strip()
+		if first_line.startswith('Devoid'):
+			self.devoid = True
+
 		if first_line.startswith('Choose') and first_line.endswith(':'):
 			self.parse_modal(raw_rules)
 			self.level1 = first_line
@@ -181,6 +184,7 @@ class Card():
 		self.level4 = None
 		self.modal_rules = None
 		self.rules_text2 = None
+		self.devoid = False
 
 		self.id = int(entry[0])
 		self.parse_name(entry[1])
@@ -230,6 +234,23 @@ card:"""
 	styling data: {self.styling_data}
 		text box mana symbols: magic-mana-small.mse-symbol-font
 		overlay: 
+"""
+		elif "Vehicle" in self.sub_types:
+			text += f"""
+	stylesheet: m15-altered
+	has styling: true
+	styling data:
+		frames: vehicle
+		other options: auto nyx crowns
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		level mana symbols: magic-mana-large.mse-symbol-font
+		promo: no
+		overlay: 
+"""
+		elif self.devoid:
+			text += f"""
+	stylesheet: m15-devoid
+	has styling: false
 """
 		elif "Enchantment" in self.super_types and "Creature" in self.super_types:
 			text += f"""
