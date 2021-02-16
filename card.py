@@ -43,14 +43,14 @@ class Card():
 
 
 	def parse_statline(self, raw_stat):
-		if not raw_stat and not raw_stat.strip():
-			self.power = None
-			self.toughness = None
+		if not raw_stat or not raw_stat.strip():
+			self.power = ''
+			self.toughness = ''
 			return
 		if "Planeswalker" in self.super_types:
 			self.loyalty = int(raw_stat[0].strip())
-			self.power = None
-			self.toughness = None
+			self.power = ''
+			self.toughness = ''
 			return
 	
 		splits = raw_stat.split('/')
