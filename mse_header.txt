@@ -1,0 +1,39 @@
+mse version: 0.3.8
+game: magic
+stylesheet: m15
+set info:
+	symbol: 
+	masterpiece symbol: 
+styling:
+	magic-m15:
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 
+	magic-m15-aftermath: text box mana symbols: magic-mana-small.mse-symbol-font
+	magic-m15-altered:
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		level mana symbols: magic-mana-large.mse-symbol-font
+		overlay: 
+	magic-m15-augment:
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 
+	magic-m15-devoid:
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 
+	magic-m15-leveler:
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 
+	magic-m15-mainframe-dfc:
+		back style: 3 ability planeswalker
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 
+	magic-m15-mainframe-planeswalker:
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 
+	magic-m15-mainframe-tokens:
+		frames: M20
+		remove from autocount: no
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 
+	magic-m15-meld-3in1:
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 
