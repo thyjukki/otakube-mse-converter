@@ -22,6 +22,12 @@ keyword:
 	reminder: When a creature with the Boozetouch keyword deals combat damage to a player, that player drinks.
 	rules: 
 	mode: core
+keyword:
+	keyword: Intoxicated
+	match: Intoxicated
+	reminder: Creatures that are Intoxicated deal damage to players in the form of drinks.
+	rules: 
+	mode: core
 version control:
 	type: none
 apprentice code: 
