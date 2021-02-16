@@ -6,6 +6,8 @@ set info:
 	description: Tyhmää ja hauskaa :D
 	symbol: 
 	masterpiece symbol: 
+	sort special rarity: separate numbering
+	mark errors: no
 styling:
 	magic-m15:
 		text box mana symbols: magic-mana-small.mse-symbol-font
