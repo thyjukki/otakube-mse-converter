@@ -65,6 +65,8 @@ class Card():
 	def parse_name(self, raw_name):
 		splits = raw_name.split('//')
 		self.name = splits[0].strip()
+		if self.name == 'I<3TKK':
+			self.name = 'I3<>TKK' #HAX
 
 		if len(splits) > 1:
 			self.name2 = splits[1].strip()
