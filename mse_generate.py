@@ -30,9 +30,6 @@ def generate_mse_set(cards: List[Card]):
 def run():
 	cards = parse_list('otakube.csv')
 
-	for card in cards:
-		print(card)
-
 	output = generate_mse_set(cards)
 	if not os.path.exists('build'):
 		os.makedirs('build')
