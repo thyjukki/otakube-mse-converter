@@ -15,7 +15,10 @@ def get_sub_type_text(super_types, sub_types):
 	elif "Planeswalker" in super_types:
 		element = 'word-list-planeswalker'
 
-	return f"<{element}>{' '.join(sub_types)}</{element}>"
+	if len(sub_types) >  1:
+		return ' '.join(map(lambda x: f"<{element}>{x.strip()}</{element}>", sub_types)) + f"<soft> </soft><{element}></{element}>"
+	else:
+		return f"<{element}></{element}>"
 
 
 class Card():
@@ -149,15 +152,15 @@ class Card():
 
 		splits = raw_rules.split('//')
 		lines = splits[0].strip().split('\n')
-		self.rules_text = '\n'.join(map(lambda x: f"		{x.strip()}", lines))
+		self.rules_text = '\n		'.join(map(lambda x: x.strip(), lines))
 		if len(lines) > 1:
-			self.rules_text = f"\n{self.rules_text}"
+			self.rules_text = f"\n		{self.rules_text}"
 
 		if len(splits) > 1:
 			lines2 = splits[1].strip().split('\n')
-			self.rules_text2 = '\n'.join(map(lambda x: f"		{x.strip()}", lines2))
+			self.rules_text2 = '\n		'.join(map(lambda x: x.strip(), lines2))
 			if len(lines2) > 1:
-				self.rules_text2 = f"\n{self.rules_text2}"
+				self.rules_text2 = f"\n		{self.rules_text2}"
 		else:
 			self.rules_text2 = None
 
@@ -172,6 +175,11 @@ class Card():
 		else:
 			self.flavor_text2 = None
 
+	def proccess_text(self, text):
+		return_text = text.replace("'", "’") # Gets replaced in MSE for some reason
+		return_text = text.replace("CARDNAME", f"<atom-cardname><nospellcheck>{self.name}</nospellcheck></atom-cardname>") # Replaces to MSE format
+
+		return return_text
 
 	def __init__(self, entry):
 		self.loyaly1_cost = None
@@ -193,8 +201,8 @@ class Card():
 		self.color = entry[4]
 		self.parse_cmc(entry[5])
 		self.parse_statline(entry[6])
-		self.parse_rules(entry[7])
-		self.parse_flavor(entry[9])
+		self.parse_rules(self.proccess_text(entry[7]))
+		self.parse_flavor(self.proccess_text(entry[9]))
 		self.rarity = entry[12]
 		self.creator = entry[13]
 
@@ -233,8 +241,7 @@ card:"""
 	has styling: true
 	styling data: {self.styling_data}
 		text box mana symbols: magic-mana-small.mse-symbol-font
-		overlay: 
-"""
+		overlay: """
 		elif "Vehicle" in self.sub_types:
 			text += f"""
 	stylesheet: m15-altered
@@ -245,13 +252,11 @@ card:"""
 		text box mana symbols: magic-mana-small.mse-symbol-font
 		level mana symbols: magic-mana-large.mse-symbol-font
 		promo: no
-		overlay: 
-"""
+		overlay:"""
 		elif self.devoid:
 			text += f"""
 	stylesheet: m15-devoid
-	has styling: false
-"""
+	has styling: false"""
 		elif "Enchantment" in self.super_types and "Creature" in self.super_types:
 			text += f"""
 	stylesheet: m15-altered
@@ -259,7 +264,9 @@ card:"""
 	styling data:
 		frames: nyx
 		other options: auto nyx crowns
-"""
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		level mana symbols: magic-mana-large.mse-symbol-font
+		overlay: """
 		elif self.modal_rules:
 			text += f"""
 	stylesheet: m15-altered
