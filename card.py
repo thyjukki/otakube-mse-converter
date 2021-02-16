@@ -12,7 +12,8 @@ class Card():
       self.toughness = None
       self.rules_text  = entry[7]
       self.flavor_text  = entry[9]
-      self.creator  = entry[12]
+      self.rarity  = entry[12]
+      self.creator  = entry[13]
 
     def __repr__(self):
         return f"Card([{self.id, self.name}])"
@@ -33,7 +34,7 @@ card:
 	image:
 	super type: <word-list-type>{self.type}</word-list-type>
 	sub type: <word-list-race></word-list-race>
-	rarity: rare
+	rarity: {self.rarity}
 	rule text:
 		{self.rules_text}		
 	flavor text: <i-flavor>{self.flavor_text}</i-flavor>"""
