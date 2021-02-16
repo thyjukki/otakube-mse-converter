@@ -39,6 +39,7 @@ def run():
 	with open('build/set', 'w', encoding='UTF-8') as file:
 		file.write(output)
 	
+	os.remove('otakube.mse-set')
 	shutil.make_archive('otakube', 'zip', 'build')
 	os.rename('otakube.zip', 'otakube.mse-set')
 

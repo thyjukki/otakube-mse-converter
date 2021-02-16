@@ -5,3 +5,4 @@ out
 build/
 otakube.mse-set
 *.csv
+*.zip
