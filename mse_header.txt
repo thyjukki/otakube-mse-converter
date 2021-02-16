@@ -2,6 +2,8 @@ mse version: 0.3.8
 game: magic
 stylesheet: m15
 set info:
+	title: Otakube
+	description: Tyhmää ja hauskaa :D
 	symbol: 
 	masterpiece symbol: 
 styling:
