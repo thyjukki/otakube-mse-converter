@@ -89,7 +89,16 @@ class Card():
 	def generate_mse_card(self, cards_count):
 
 		text = f"""
-card:
+card:"""
+
+		if "Planeswalker" in self.super_types:
+			text += f"""
+	stylesheet: m15-mainframe-planeswalker"""
+		elif "Saga" in self.sub_types:
+			text += f"""
+	stylesheet: m15-saga"""
+
+		text += f"""
 	has styling: false
 	notes: 
 	time created: 2019-06-02 01:47:48
@@ -101,13 +110,19 @@ card:
 	sub type: {self.get_sub_type_text()}
 	rarity: {self.rarity}
 	rule text:\n"""
+
 		for line in self.rules_text.split('\n'):
 			text += f"		{line.strip()}\n"
 		text += f"""	flavor text: {self.get_flavor_text()}"""
+
 		if self.power is not None and self.toughness is not None:
 			text += f"""
 	power: {self.power}
 	toughness: {self.toughness}"""
+
+		if "Planeswalker" in self.super_types:
+			text += f"""
+	loyalty: {self.loyalty}"""
 
 		text += f"""
 	custom card number: {self.get_card_number(cards_count)}
