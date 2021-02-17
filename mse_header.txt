@@ -15,7 +15,7 @@ styling:
 		overlay: 
 	magic-m15-aftermath: text box mana symbols: magic-mana-small.mse-symbol-font
 	magic-m15-altered:
-		text box mana symbols: magic-mana-small.mse-symbol-font
+		text box mana symbols: magic-mana-small-otakube.mse-symbol-font
 		level mana symbols: magic-mana-large.mse-symbol-font
 		overlay: 
 	magic-m15-augment:

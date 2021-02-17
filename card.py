@@ -1,3 +1,5 @@
+import re
+
 def get_sub_type_text(super_types, sub_types):
 	element = ""
 	if "Land" in super_types:
@@ -68,6 +70,7 @@ class Card():
 	def parse_name(self, raw_name):
 		splits = raw_name.split('//')
 		self.name = splits[0].strip()
+		self.safe_name = "{0:03}_{1}".format(self.id, re.sub(r'[^a-zA-Z ]', '', self.name).strip().replace(' ', '_'))
 		if self.name == 'I<3TKK':
 			self.name = 'I3<>TKK' #HAX
 
@@ -286,7 +289,7 @@ card:"""
 	has styling: false"""
 
 		text += f"""
-	notes: 
+	notes: {self.safe_name}
 	time created: 2019-06-02 01:47:48
 	time modified: 2019-06-02 01:50:10
 	name: {self.name}

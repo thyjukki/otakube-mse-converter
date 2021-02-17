@@ -43,5 +43,20 @@ def run():
 	shutil.make_archive('otakube', 'zip', 'build')
 	os.rename('otakube.zip', 'otakube.mse-set')
 
+	if os.path.exists('custom.deck'):
+		os.remove('custom.deck')
+
+	
+	if os.path.exists('export'):
+		shutil.rmtree('./export', ignore_errors=True)
+		
+	#os.makedirs('export')
+	dir_path = os.path.dirname(os.path.realpath(__file__))
+	os.system(f".\MSE\mse  --export otakube.mse-set \"{dir_path}\\export\\{{card.notes}}.jpg\"")
+	with open('custom.deck', 'w', encoding='UTF-8') as file:
+		file.write("Custom\n")
+		for card in cards:
+			file.write(f"1 {card.safe_name}.jpg\n")
+
 if __name__ == '__main__':
 	run()
