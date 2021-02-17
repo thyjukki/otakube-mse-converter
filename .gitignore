@@ -1,7 +1,9 @@
 .vscode/
 __pycache__/
-env
-out
+export/
+custom.deck
+env/
+out/
 build/
 otakube.mse-set
 *.csv
