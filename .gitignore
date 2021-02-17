@@ -5,6 +5,7 @@ custom.deck
 env/
 out/
 build/
+sheets/
 otakube.mse-set
 *.csv
 *.zip

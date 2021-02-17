@@ -1,5 +1,6 @@
 import os
 import shutil
+from PIL import Image
 from csv import reader
 from typing import List
 from card import Card
@@ -57,6 +58,39 @@ def run():
 		file.write("Custom\n")
 		for card in cards:
 			file.write(f"1 {card.safe_name}.jpg\n")
+	generate_sheets(cards)
+	
+	
+def generate_sheets(cards: List[Card]):
+	if os.path.exists('sheets'):
+		shutil.rmtree('./sheets', ignore_errors=True)
+		
+	os.makedirs('sheets')
+
+	card_width = 375
+	card_height = 523
+	index = 0
+	sheet = 0
+	while index < len(cards):
+		new_im = Image.new('RGB', (card_width*10,card_height*7))
+		for j in range (7):
+			if index >= len(cards):
+				break
+			for i in range (10):
+				if index >= len(cards):# or (i== 9 and j == 6):
+					break
+
+				card = cards[index]
+				im = Image.open(f"export/{card.safe_name}.jpg")
+				if card.name2:
+					im = im.rotate(90, expand=True)
+					im.save(f"export/{card.safe_name}.jpg")
+
+				new_im.paste(im, (i*card_width,j*card_height))
+				index += 1
+		new_im.save(f"./sheets/otakube_{sheet}.jpg")
+		sheet += 1
+		
 
 if __name__ == '__main__':
 	run()
