@@ -1,0 +1,278 @@
+﻿mse version: 0.3.7
+short name: 
+full name: 
+icon: 
+position hint: 100000
+installer group: 
+version: 0.0.0
+compatible version: 0.0.0
+package:
+	name: magic.mse-game
+	version: 2015-09-08
+	short name: Magic
+	full name: Magic the Gathering
+	icon url: card-back.png
+	installer group: magic/game files
+	position hint: 1
+	description: 
+	depends on: magic-blends.mse-include 2014-06-25
+	depends on: magic-watermarks.mse-include 2007-09-23
+package:
+	name: magic-blends.mse-include
+	version: 2015-05-23
+	short name: magic-blends
+	full name: Magic The Gathering, card blend utilities
+	icon url: 
+	installer group: unclassified/magic/magic-blends
+	position hint: 100000
+	description: 
+package:
+	name: magic-default-image.mse-include
+	version: 2007-09-23
+	short name: magic-default-image
+	full name: Magic The Gathering, placeholder images
+	icon url: 
+	installer group: unclassified/magic/default/magic-default-image
+	position hint: 100000
+	description: 
+package:
+	name: magic-identity-new.mse-include
+	version: 2012-02-23
+	short name: magic-identity-new
+	full name: Magic The Gathering, modern identities
+	icon url: 
+	installer group: unclassified/magic/identity/magic-identity-new
+	position hint: 100000
+	description: 
+package:
+	name: magic-watermarks.mse-include
+	version: 2015-04-07
+	short name: magic-watermarks
+	full name: Magic The Gathering, textbox watermarks
+	icon url: 
+	installer group: unclassified/magic/magic-watermarks
+	position hint: 100000
+	description: 
+package:
+	name: magic-mana-small.mse-symbol-font
+	version: 2014-01-20
+	short name: normal
+	full name: normal
+	icon url: mana_r.png
+	installer group: magic/Mana symbols/normal style
+	position hint: 1
+	description: 
+package:
+	name: magic-mana-large.mse-symbol-font
+	version: 2011-04-18
+	short name: popup style
+	full name: popup style
+	icon url: mana_r.png
+	installer group: magic/Mana symbols/popup style
+	position hint: 2
+	description: 
+package:
+	name: magic-m15-bigtext.mse-style
+	version: 2015-09-08
+	short name: M15 Big Text
+	full name: After M15 with Big Text
+	icon url: card-sample.png
+	installer group: magic/m15 style/cards with big text
+	position hint: 9
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-default-image.mse-include 2007-09-23
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-identity-new.mse-include 2012-01-22
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-devoid.mse-style
+	version: 2015-09-07
+	short name: M15 Devoid
+	full name: Devoid Cards
+	icon url: card-sample.png
+	installer group: magic/m15 style/devoid cards
+	position hint: 2
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-default-image.mse-include 2007-09-23
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-identity-new.mse-include 2012-01-22
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-doublefaced.mse-style
+	version: 2015-07-02
+	short name: M15 Double-faced
+	full name: M15 Style Double-faced
+	icon url: card-sample.png
+	installer group: magic/m15 style/double faced
+	position hint: 4
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-default-image.mse-include 2007-09-23
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-identity-new.mse-include 2012-01-22
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-doublefaced-planeswalker.mse-style
+	version: 2015-09-08
+	short name: M15 DFC Planeswalkers
+	full name: Double Faced Planeswalkers
+	icon url: card-sample.png
+	installer group: magic/M15 style/double faced/planeswalker
+	position hint: 4
+	description: 
+	depends on: magic.mse-game 2014-07-02
+	depends on: magic-default-image.mse-include 2007-09-23
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-identity-new.mse-include 2012-01-22
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-doublefaced-sacrificer.mse-style
+	version: 2015-07-27
+	short name: M15 Sacrificers
+	full name: Planeswalker -> Normal
+	icon url: card-sample.png
+	installer group: magic/M15 style/double faced/sacrificer
+	position hint: 9
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-default-image.mse-include 2007-09-23
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-identity-new.mse-include 2012-01-22
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-doublefaced-sparker.mse-style
+	version: 2015-09-08
+	short name: M15 Sparkers
+	full name: Normal -> Planeswalker
+	icon url: card-sample.png
+	installer group: magic/M15 style/double faced/sparker
+	position hint: 2
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-default-image.mse-include 2007-09-23
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-identity-new.mse-include 2012-01-22
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-emblem.mse-style
+	version: 2015-09-10
+	short name: Emblems
+	full name: M15 style
+	icon url: card-sample.png
+	installer group: magic/m15 style/emblems
+	position hint: 999
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-emblem-udelude.mse-style
+	version: 2015-09-07
+	short name: Udelude's Emblems
+	full name: M15 style
+	icon url: card-sample.png
+	installer group: magic/M15 style/emblems/Udelude
+	position hint: 9
+	description: 
+	depends on: magic.mse-game 2008-06-02
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-emblem-acorntail.mse-style
+	version: 2015-09-08
+	short name: Acorntail's Emblems
+	full name: M15 style
+	icon url: card-sample.png
+	installer group: magic/m15 style/emblems/acorntail
+	position hint: 9
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-expedition.mse-style
+	version: 2015-09-09
+	short name: M15 Expeditions
+	full name: M15 Expeditions Land
+	icon url: card-sample.png
+	installer group: magic/m15/expedition
+	position hint: 2
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-loyalty.mse-style
+	version: 2015-07-01
+	short name: M15 Loyalties
+	full name: With Loyalty Abilities
+	icon url: card-sample.png
+	installer group: magic/m15 style/cards with loyalty abilities
+	position hint: 9
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-default-image.mse-include 2007-09-23
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-identity-new.mse-include 2012-01-22
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-nameonright.mse-style
+	version: 2015-07-01
+	short name: M15 style
+	full name: With Name On Right Side
+	icon url: card-sample.png
+	installer group: magic/m15 style/normal cards/name on right
+	position hint: 9
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-m15.mse-style 2014-06-25
+	depends on: magic-default-image.mse-include 2007-09-23
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-identity-new.mse-include 2012-01-22
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-m15-textless-land.mse-style
+	version: 2015-09-07
+	short name: M15 Textless Land
+	full name: M15 Textless Land
+	icon url: card-sample.png
+	installer group: magic/m15 style/textless/land
+	position hint: 2
+	description: 
+	depends on: magic.mse-game 2014-06-25
+	depends on: magic-watermarks.mse-include 2007-09-23
+package:
+	name: magic-new-omega-doublefaced.mse-style
+	version: 2015-07-22
+	short name: Omega Doublefaced
+	full name: After 8th edition
+	icon url: card-sample.png
+	installer group: magic/new style/omega cards/doublefaced cards
+	position hint: 19
+	description: 
+	depends on: magic.mse-game 2008-06-02
+	depends on: magic-default-image.mse-include 2007-09-23
+	depends on: magic-watermarks.mse-include 2007-09-23
+	depends on: magic-identity-new.mse-include 2012-01-22
+	depends on: magic-mana-large.mse-symbol-font 2007-09-23
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
+package:
+	name: magic-old.mse-style
+	version: 2015-06-23
+	short name: Old style
+	full name: Before 8th edition
+	icon url: card-sample.png
+	installer group: magic/old style/normal cards
+	position hint: 21
+	description: 
+	depends on: magic.mse-game 2008-06-02
+	depends on: magic-watermarks.mse-include 2007-12-29
+	depends on: magic-mana-small.mse-symbol-font 2007-09-23
