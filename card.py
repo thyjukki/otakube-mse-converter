@@ -178,6 +178,35 @@ class Card():
 		else:
 			self.flavor_text2 = None
 
+	def parse_color(self, raw_color):
+		colors = []
+		
+		splits = raw_color.split('//')
+		parsed_string = ' '.join(splits[0].strip())
+		for c in parsed_string:
+			if c == 'W':
+				colors.append('white')
+			elif c == 'U':
+				colors.append('blue')
+			elif c == 'B':
+				colors.append('black')
+			elif c == 'R':
+				colors.append('red')
+			elif c == 'G':
+				colors.append('green')
+			elif c == 'M':
+				colors.append('multicolor')
+		
+		if not colors:
+			self.color = None
+		else:
+			if "Land" in self.super_types:
+				self.color = "land, "
+				self.color += ', '.join(colors)
+			else:
+				self.color = None
+
+
 	def proccess_text(self, text):
 		return_text = text.replace("'", "’") # Gets replaced in MSE for some reason
 		return_text = text.replace("CARDNAME", f"<atom-cardname><nospellcheck>{self.name}</nospellcheck></atom-cardname>") # Replaces to MSE format
@@ -201,12 +230,15 @@ class Card():
 		self.parse_name(entry[1])
 		self.revision = entry[2]
 		self.parse_types(entry[3])
-		self.color = entry[4]
+		self.parse_color(entry[4])
 		self.parse_cmc(entry[5])
 		self.parse_statline(entry[6])
 		self.parse_rules(self.proccess_text(entry[7]))
 		self.parse_flavor(self.proccess_text(entry[9]))
 		self.rarity = entry[12]
+		if not self.rarity.strip():
+			self.rarity = "common"
+			print(f"WARNING: No rarirty for {self.name} ({self.id})")
 		self.creator = entry[13]
 
 		self.check_errors()
@@ -291,7 +323,13 @@ card:"""
 		text += f"""
 	notes: {self.safe_name}
 	time created: 2019-06-02 01:47:48
-	time modified: 2019-06-02 01:50:10
+	time modified: 2019-06-02 01:50:10"""
+
+		if self.color:
+			text += f"""
+	card color: {self.color}"""
+
+		text+= f"""
 	name: {self.name}
 	casting cost: {self.cmc}
 	image:

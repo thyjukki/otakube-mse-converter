@@ -4,8 +4,9 @@ stylesheet: m15
 set info:
 	title: Otakube
 	description: Tyhmää ja hauskaa :D
-	symbol: 
+	symbol: otakube.mse-symbol
 	masterpiece symbol: 
+	automatic reminder text: old, expert, pseudo, action, custom
 	automatic card numbers: no
 	sort special rarity: separate numbering
 	mark errors: no

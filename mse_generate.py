@@ -4,6 +4,7 @@ from PIL import Image
 from csv import reader
 from typing import List
 from card import Card
+import subprocess
 
 
 def parse_list(file):
@@ -41,6 +42,7 @@ def run():
 	
 	if os.path.exists('otakube.mse-set'):
 		os.remove('otakube.mse-set')
+	shutil.copy('otakube.mse-symbol', 'build/otakube.mse-symbol')
 	shutil.make_archive('otakube', 'zip', 'build')
 	os.rename('otakube.zip', 'otakube.mse-set')
 
@@ -59,6 +61,9 @@ def run():
 		for card in cards:
 			file.write(f"1 {card.safe_name}.jpg\n")
 	generate_sheets(cards)
+
+	if os.path.exists('upload.py'):
+		subprocess.call(["python", "upload.py"])
 	
 	
 def generate_sheets(cards: List[Card]):
@@ -90,7 +95,8 @@ def generate_sheets(cards: List[Card]):
 				index += 1
 		new_im.save(f"./sheets/otakube_{sheet}.jpg")
 		sheet += 1
-		
+
+
 
 if __name__ == '__main__':
 	run()
