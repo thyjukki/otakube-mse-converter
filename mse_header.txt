@@ -49,3 +49,6 @@ styling:
 	magic-m15-split-fusable:
 		text box mana symbols: magic-mana-small.mse-symbol-font
 		overlay: 
+	magic-m15-unstable-basics:
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: 

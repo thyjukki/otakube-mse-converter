@@ -17,7 +17,7 @@ def get_sub_type_text(super_types, sub_types):
 	elif "Planeswalker" in super_types:
 		element = 'word-list-planeswalker'
 
-	if len(sub_types) >  1:
+	if len(sub_types) >=  1:
 		return ' '.join(map(lambda x: f"<{element}>{x.strip()}</{element}>", sub_types)) + f"<soft> </soft><{element}></{element}>"
 	else:
 		return f"<{element}></{element}>"
@@ -119,14 +119,14 @@ class Card():
 			self.level4 = lines[3].split(':')[-1].strip()
 			self.loyaly4_cost = lines[3].split(':')[0].strip()
 
-	def parse_modal(self,  raw_rules):
+	def parse_modal(self,  raw_rules: str):
 		lines = raw_rules.split('\n')
 		self.modal_rules = ""
 		first = True
 		for line in lines[1:]:
 			if first:
 				first = False
-				self.modal_rules += f"\n		<soft-line>{line.strip()}"
+				self.modal_rules += f"\n		<soft-line>{line.strip('•').strip()}"
 			else:
 				self.modal_rules += f"\n		{line.strip()}"
 		self.modal_rules += '</soft-line>'
@@ -148,7 +148,7 @@ class Card():
 		if first_line.startswith('Devoid'):
 			self.devoid = True
 
-		if first_line.startswith('Choose') and first_line.endswith(':'):
+		if first_line.startswith('Choose') and first_line.endswith('—'):
 			self.parse_modal(raw_rules)
 			self.level1 = first_line
 			#return
@@ -201,8 +201,10 @@ class Card():
 			self.color = None
 		else:
 			if "Land" in self.super_types:
-				self.color = "land, "
-				self.color += ', '.join(colors)
+				self.color = ', '.join(colors)
+				self.color += ", land"
+			elif "Token" in self.super_types:
+				self.color = ', '.join(colors)
 			else:
 				self.color = None
 
@@ -212,6 +214,21 @@ class Card():
 		return_text = text.replace("CARDNAME", f"<atom-cardname><nospellcheck>{self.name}</nospellcheck></atom-cardname>") # Replaces to MSE format
 
 		return return_text
+
+
+	def parse_picture(self, raw_img):
+		splits = raw_img.split('////')
+		self.img_url = splits[0].strip()
+		if self.img_url:
+			self.img_name = f"{self.id}_{self.safe_name}"
+
+		if len(splits) > 1:
+			self.img_url2 = splits[1].strip()
+			if self.img_url:
+				self.img_name2 = f"{self.id}_{self.safe_name}_2"
+		else:
+			self.img_url2 = None
+			self.img_name2 = None
 
 	def __init__(self, entry):
 		self.loyaly1_cost = None
@@ -225,6 +242,10 @@ class Card():
 		self.modal_rules = None
 		self.rules_text2 = None
 		self.devoid = False
+		self.img_url = ""
+		self.img_url2 = ""
+		self.img_name = ""
+		self.img_name2 = ""
 
 		self.id = int(entry[0])
 		self.parse_name(entry[1])
@@ -240,6 +261,7 @@ class Card():
 			self.rarity = "common"
 			print(f"WARNING: No rarirty for {self.name} ({self.id})")
 		self.creator = entry[13]
+		self.parse_picture(entry[17])
 
 		self.check_errors()
 
@@ -288,6 +310,27 @@ card:"""
 		level mana symbols: magic-mana-large.mse-symbol-font
 		promo: no
 		overlay:"""
+		elif "Token" in self.super_types or "Special" in self.super_types:
+			text += f"""
+	stylesheet: m15-mainframe-tokens"""
+			if self.rules_text:
+				text += f"""
+	has styling: true
+	styling data:
+		frames: tall, M20
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		promo: no
+		overlay:"""
+			else:
+				text += f"""
+	has styling: false"""
+		elif "Basic" in self.super_types:
+			text += f"""
+	stylesheet: m15-unstable-basics
+	has styling: true
+	styling data:
+		text box mana symbols: magic-mana-small.mse-symbol-font
+		overlay: """
 		elif self.devoid:
 			text += f"""
 	stylesheet: m15-devoid
@@ -332,7 +375,7 @@ card:"""
 		text+= f"""
 	name: {self.name}
 	casting cost: {self.cmc}
-	image:
+	image: {self.img_name}
 	super type: <word-list-type>{' '.join(self.super_types)}</word-list-type>
 	sub type: {get_sub_type_text(self.super_types, self.sub_types)}
 	rarity: {self.rarity}
@@ -394,7 +437,7 @@ card:"""
 	casting cost 2: {self.cmc2}"""
 
 		text += f"""
-	image 2: """
+	image 2: {self.img_name2}"""
 
 		if self.super_types2:
 			text += f"""
