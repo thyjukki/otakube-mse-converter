@@ -128,7 +128,7 @@ class Card():
 				first = False
 				self.modal_rules += f"\n		<soft-line>{line.strip('•').strip()}"
 			else:
-				self.modal_rules += f"\n		{line.strip()}"
+				self.modal_rules += f"\n		{line.strip('•').strip()}"
 		self.modal_rules += '</soft-line>'
 
 			
