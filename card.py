@@ -169,12 +169,18 @@ class Card():
 
 	def parse_flavor(self, raw_flavor):
 		splits = raw_flavor.split('//')
-		parsed_string = ' '.join(splits[0].strip().split('\n'))
+		lines = splits[0].strip().split('\n')
+		parsed_string = '\n		'.join(splits[0].strip().split('\n'))
 		self.flavor_text = f"<i-flavor>{parsed_string}</i-flavor>"
+		if len(lines) > 1:
+			self.flavor_text = f"\n		{self.flavor_text}"
 
 		if len(splits) > 1:
-			parsed_string2 = ' '.join(splits[1].strip().split('\n'))
+			lines2 = splits[1].strip().split('\n')
+			parsed_string2 = '\n		'.join(splits[1].strip().split('\n'))
 			self.flavor_text2 = f"<i-flavor>{parsed_string2}</i-flavor>"
+			if len(lines2) > 1:
+				self.flavor_text2 = f"\n		{self.flavor_text2}"
 		else:
 			self.flavor_text2 = None
 
@@ -246,6 +252,9 @@ class Card():
 		self.img_url2 = ""
 		self.img_name = ""
 		self.img_name2 = ""
+		self.flavor_text = None
+		self.flavor_text2 = None
+		self.rules_text = None
 
 		self.id = int(entry[0])
 		self.parse_name(entry[1])
@@ -262,6 +271,7 @@ class Card():
 			print(f"WARNING: No rarirty for {self.name} ({self.id})")
 		self.creator = entry[13]
 		self.parse_picture(entry[17])
+		self.illustrator = entry[18]
 
 		self.check_errors()
 

@@ -1,24 +1,54 @@
 import os
 import shutil
 from PIL import Image
-from csv import reader
+import pickle
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+import gspread
+from gspread import Worksheet
 from typing import List
 from card import Card
 import subprocess
 import requests
+import argparse
+
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+SPREADSHEET_ID = '11U38EPYmtDRnwzh8r9bb0rHfFL3dBzYSA-WNP0Lgxdo'
+SPREADSHEET_SHEET = 'Alpha 1.0.e'
+SPREADSHEET_SHEET_TOKEN = 'A1.0.e Tokens'
 
 
-def parse_list(file):
-	# open file in read mode
-	with open(file, 'r', encoding='UTF-8') as read_obj:
-		csv_reader = reader(read_obj)
-		next(csv_reader)
-		next(csv_reader)
-		cards = [Card(row) for row in csv_reader]
+def parse_list(sheet: Worksheet):
+	cards = []
+	for row in sheet.get_all_values():
+		if row[0] and row[0] != 'ID':
+			cards.append(Card(row))
 
-		sorted_cards = sorted(cards, key= lambda e:e.id)
+	sorted_cards = sorted(cards, key=lambda e: e.id)
+	return sorted_cards
 
-		return sorted_cards
+
+def build_cred():
+	cred = None
+	# The file token.pickle stores the user's access and refresh tokens, and is
+	# created automatically when the authorization flow completes for the first
+	# time.
+	if os.path.exists('token.pickle'):
+		with open('token.pickle', 'rb') as token:
+			cred = pickle.load(token)
+	# If there are no (valid) credentials available, let the user log in.
+	if not cred or not cred.valid:
+		if cred and cred.expired and cred.refresh_token:
+			cred.refresh(Request())
+		else:
+			flow = InstalledAppFlow.from_client_secrets_file(
+				'credentials.json', SCOPES)
+			cred = flow.run_local_server(port=0, success_message='test')
+		# Save the credentials for the next run
+		with open('token.pickle', 'wb') as token:
+			pickle.dump(cred, token)
+	return cred
 
 
 def generate_mse_set(cards: List[Card], name: str):
@@ -29,36 +59,30 @@ def generate_mse_set(cards: List[Card], name: str):
 		full_text += card.generate_mse_card(len(cards))
 
 		if card.img_url:
-			print(card.img_url)
-			response = requests.get(card.img_url, stream=True)
-
-			with open(f"build_{name}/{card.img_name}", 'wb') as output:
-				for block in response.iter_content(1024):
-					if not block:
-						break
-
-					output.write(block)
-				output.close()
+			get_img(card.img_url, card.img_name, name)
 
 		if card.img_url2:
-			print(card.img_url2)
-			response = requests.get(card.img_url2, stream=True)
-
-			with open(f"build_{name}/{card.img_name2}", 'wb') as output:
-				for block in response.iter_content(1024):
-					if not block:
-						break
-						
-					output.write(block)
-				output.close()
+			get_img(card.img_url2, card.img_name2, name)
 
 	with open('mse_footer.txt', 'r', encoding='UTF-8') as read_obj:
 		full_text += "\n" + read_obj.read()
 	return full_text
 
 
-def run(name):
-	cards = parse_list(f"{name}.csv")
+def get_img(img_url, img_name, name):
+	print(img_url)
+	response = requests.get(img_url, stream=True)
+	with open(f"build_{name}/{img_name}", 'wb') as output:
+		for block in response.iter_content(1024):
+			if not block:
+				break
+
+			output.write(block)
+		output.close()
+
+
+def run(name, sheet: Worksheet, printable: bool):
+	cards = parse_list(sheet)
 
 	if not os.path.exists(f"build_{name}"):
 		os.makedirs(f"build_{name}")
@@ -67,33 +91,29 @@ def run(name):
 
 	with open(f"build_{name}/set", 'w', encoding='UTF-8') as file:
 		file.write(output)
-	
+
 	if os.path.exists(f"{name}.mse-set"):
 		os.remove(f"{name}.mse-set")
 	shutil.copy('otakube.mse-symbol', f"build_{name}/otakube.mse-symbol")
 	shutil.make_archive(name, 'zip', f"build_{name}")
 	os.rename(f"{name}.zip", f"{name}.mse-set")
 
-	if os.path.exists('custom.deck'):
-		os.remove('custom.deck')
-
-	
 	if os.path.exists(f"export_{name}"):
 		shutil.rmtree(f"./export_{name}", ignore_errors=True)
-		
+
 	dir_path = os.path.dirname(os.path.realpath(__file__))
-	os.system(f".\MSE\mse  --export {name}.mse-set \"{dir_path}\\export_{name}\\{{card.notes}}.jpg\"")
-	with open('custom.deck', 'w', encoding='UTF-8') as file:
-		file.write("Custom\n")
-		for card in cards:
-			file.write(f"1 {card.safe_name}.jpg\n")
-	generate_sheets(cards, name)
-	
-	
-def generate_sheets(cards: List[Card], name):
+	os.system(f".\\MSE\\mse  --export {name}.mse-set \"{dir_path}\\export_{name}\\{{card.notes}}.jpg\"")
+
+	if printable:
+		generate_a4_sheets(cards, name)
+	else:
+		generate_tts_sheets(cards, name)
+
+
+def generate_tts_sheets(cards: List[Card], name):
 	if os.path.exists(f"sheets_{name}"):
 		shutil.rmtree(f"./sheets_{name}", ignore_errors=True)
-		
+
 	os.makedirs(f"sheets_{name}")
 
 	card_width = 375
@@ -101,12 +121,12 @@ def generate_sheets(cards: List[Card], name):
 	index = 0
 	sheet = 0
 	while index < len(cards):
-		new_im = Image.new('RGB', (card_width*10,card_height*7))
-		for j in range (7):
+		new_im = Image.new('RGB', (card_width * 10, card_height * 7))
+		for j in range(7):
 			if index >= len(cards):
 				break
-			for i in range (10):
-				if index >= len(cards):# or (i== 9 and j == 6):
+			for i in range(10):
+				if index >= len(cards):  # or (i== 9 and j == 6):
 					break
 
 				card = cards[index]
@@ -115,16 +135,60 @@ def generate_sheets(cards: List[Card], name):
 					im = im.rotate(90, expand=True)
 					im.save(f"export_{name}/{card.safe_name}.jpg")
 
-				new_im.paste(im, (i*card_width,j*card_height))
+				new_im.paste(im, (i * card_width, j * card_height))
 				index += 1
 		new_im.save(f"./sheets_{name}/{name}_{sheet}.jpg")
 		sheet += 1
 
 
+def generate_a4_sheets(cards: List[Card], name):
+	if os.path.exists(f"sheets_{name}"):
+		shutil.rmtree(f"./sheets_{name}", ignore_errors=True)
+
+	os.makedirs(f"sheets_{name}")
+
+	card_width = 375
+	card_height = 523
+	index = 0
+	sheet = 0
+	while index < len(cards):
+		new_im = Image.new('RGB', (card_width * 10, card_height * 7))
+		for j in range(7):
+			if index >= len(cards):
+				break
+			for i in range(10):
+				if index >= len(cards):  # or (i== 9 and j == 6):
+					break
+
+				card = cards[index]
+				im = Image.open(f"export_{name}/{card.safe_name}.jpg")
+				if card.name2:
+					im = im.rotate(90, expand=True)
+					im.save(f"export_{name}/{card.safe_name}.jpg")
+
+				new_im.paste(im, (i * card_width, j * card_height))
+				index += 1
+		new_im.save(f"./sheets_{name}/{name}_{sheet}.jpg")
+		sheet += 1
+
 
 if __name__ == '__main__':
-	run('otakube')
-	run('otakube_tokens')
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-P", "--print", help="A4 printable sheet", action="store_true")
 
-	if os.path.exists('upload.py'):
+	# Read arguments from the command line
+	args = parser.parse_args()
+
+	if not os.path.exists('credentials.json'):
+		raise Exception(
+			"credentials.json not found, guide for generating : https://developers.google.com/sheets/api/quickstart/python")
+
+	gc = gspread.authorize(build_cred())
+	sh = gc.open_by_key(SPREADSHEET_ID)
+	card_sheet = sh.worksheet(SPREADSHEET_SHEET)
+	token_sheet = sh.worksheet(SPREADSHEET_SHEET_TOKEN)
+	run('otakube', card_sheet, args.print)
+	run('otakube_tokens', token_sheet, args.print)
+
+	if os.path.exists('upload.py') and not args.print:
 		subprocess.call(["python", "upload.py"])

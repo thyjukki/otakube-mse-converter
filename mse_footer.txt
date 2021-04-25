@@ -29,6 +29,12 @@ keyword:
 	rules: 
 	mode: core
 keyword:
+	keyword: Skål
+	match: Skål
+	reminder: Each player drinks
+	rules:
+	mode: core
+keyword:
 	keyword: Living relic
 	match: Living relic
 	reminder: When this equipment enters the battlefield, put a 0/0 black Teekkari creature token onto the battlefield, then attach this to it.

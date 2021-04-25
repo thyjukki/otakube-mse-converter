@@ -3,6 +3,9 @@ game: magic
 stylesheet: m15
 set info:
 	title: Otakube
+	copyright: Alpha 1.0
+	set code: Otakube
+	set language: EN
 	description: Tyhmää ja hauskaa :D
 	symbol: otakube.mse-symbol
 	masterpiece symbol: 
