@@ -11,18 +11,19 @@ from card import Card
 import subprocess
 import requests
 import argparse
+from PIL import Image, ImageFont, ImageDraw
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 SPREADSHEET_ID = '11U38EPYmtDRnwzh8r9bb0rHfFL3dBzYSA-WNP0Lgxdo'
-SPREADSHEET_SHEET = 'Alpha 1.0.e'
-SPREADSHEET_SHEET_TOKEN = 'A1.0.e Tokens'
+SPREADSHEET_SHEET = 'Alpha 1.1'
+SPREADSHEET_SHEET_TOKEN = 'A1.0.e EXTRA TOKENS'
 
 
 def parse_list(sheet: Worksheet):
 	cards = []
 	for row in sheet.get_all_values():
-		if row[0] and row[0] != 'ID':
+		if row[0] and row[0] != 'ID' and row[2]:
 			cards.append(Card(row))
 
 	sorted_cards = sorted(cards, key=lambda e: e.id)
@@ -60,6 +61,16 @@ def generate_mse_set(cards: List[Card], name: str):
 
 		if card.img_url:
 			get_img(card.img_url, card.img_name, name)
+		elif not os.path.isfile(f"build_{name}/{card.id}_{card.safe_name}_tmp.jpg"):
+			name_split = card.name.split()[0].replace(',', '').replace('-', '')
+			get_img(f"https://loremflickr.com/311/228/{name_split}", f"{card.id}_{card.safe_name}_tmp", name)
+			img = Image.open(f"build_{name}/{card.id}_{card.safe_name}_tmp")
+			font = ImageFont.truetype("BebasNeue-Bold.ttf", 40, encoding="unic")
+			image_editable = ImageDraw.Draw(img)
+			w_img, h_img = (311, 228)
+			w, h = font.getsize("PLACEHOLDER")
+			image_editable.text(((w_img-w)/2, (h_img-h)/2), "PLACEHOLDER", (245, 66, 66, 155), font)
+			img.save(f"build_{name}/{card.id}_{card.safe_name}_tmp.jpg")
 
 		if card.img_url2:
 			get_img(card.img_url2, card.img_name2, name)
@@ -71,7 +82,7 @@ def generate_mse_set(cards: List[Card], name: str):
 
 def get_img(img_url, img_name, name):
 	print(img_url)
-	response = requests.get(img_url, stream=True)
+	response = requests.get(img_url, stream=True, allow_redirects=True)
 	with open(f"build_{name}/{img_name}", 'wb') as output:
 		for block in response.iter_content(1024):
 			if not block:

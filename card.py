@@ -227,6 +227,8 @@ class Card():
 		self.img_url = splits[0].strip()
 		if self.img_url:
 			self.img_name = f"{self.id}_{self.safe_name}"
+		else:
+			self.img_name = f"{self.id}_{self.safe_name}_tmp.jpg"
 
 		if len(splits) > 1:
 			self.img_url2 = splits[1].strip()
@@ -257,21 +259,21 @@ class Card():
 		self.rules_text = None
 
 		self.id = int(entry[0])
-		self.parse_name(entry[1])
-		self.revision = entry[2]
-		self.parse_types(entry[3])
-		self.parse_color(entry[4])
-		self.parse_cmc(entry[5])
-		self.parse_statline(entry[6])
-		self.parse_rules(self.proccess_text(entry[7]))
-		self.parse_flavor(self.proccess_text(entry[9]))
-		self.rarity = entry[12]
+		self.parse_name(entry[2])
+		self.revision = entry[3]
+		self.parse_types(entry[4])
+		self.parse_color(entry[6])
+		self.parse_cmc(entry[7])
+		self.parse_statline(entry[8])
+		self.parse_rules(self.proccess_text(entry[9]))
+		self.parse_flavor(self.proccess_text(entry[12]))
+		self.rarity = entry[15]
 		if not self.rarity.strip():
 			self.rarity = "common"
 			print(f"WARNING: No rarirty for {self.name} ({self.id})")
-		self.creator = entry[13]
-		self.parse_picture(entry[17])
-		self.illustrator = entry[18]
+		self.creator = entry[16]
+		self.parse_picture(entry[20])
+		self.illustrator = entry[21]
 
 		self.check_errors()
 
