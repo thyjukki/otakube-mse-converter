@@ -1,6 +1,5 @@
 import os
 import shutil
-from PIL import Image
 import pickle
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -11,18 +10,30 @@ from card import Card
 import subprocess
 import requests
 import argparse
+import csv
 from PIL import Image, ImageFont, ImageDraw
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 SPREADSHEET_ID = '11U38EPYmtDRnwzh8r9bb0rHfFL3dBzYSA-WNP0Lgxdo'
-SPREADSHEET_SHEET = 'Alpha 1.1'
+SPREADSHEET_SHEET = 'Alpha 1.2'
 SPREADSHEET_SHEET_TOKEN = 'A1.0.e EXTRA TOKENS'
 
 
-def parse_list(sheet: Worksheet):
+def parse_list_gs(sheet: Worksheet):
 	cards = []
 	for row in sheet.get_all_values():
+		if row[0] and row[0] != 'ID' and row[2]:
+			cards.append(Card(row))
+
+	sorted_cards = sorted(cards, key=lambda e: e.id)
+	return sorted_cards
+
+
+def parse_list_csv(file):
+	cards = []
+	csvreader = csv.reader(file)
+	for row in csvreader:
 		if row[0] and row[0] != 'ID' and row[2]:
 			cards.append(Card(row))
 
@@ -92,9 +103,7 @@ def get_img(img_url, img_name, name):
 		output.close()
 
 
-def run(name, sheet: Worksheet, printable: bool):
-	cards = parse_list(sheet)
-
+def run(name, cards: List[Card], printable: bool):
 	if not os.path.exists(f"build_{name}"):
 		os.makedirs(f"build_{name}")
 
@@ -163,11 +172,11 @@ def generate_a4_sheets(cards: List[Card], name):
 	index = 0
 	sheet = 0
 	while index < len(cards):
-		new_im = Image.new('RGB', (card_width * 10, card_height * 7))
-		for j in range(7):
+		new_im = Image.new('RGB', (card_width * 3, card_height * 3))
+		for j in range(3):
 			if index >= len(cards):
 				break
-			for i in range(10):
+			for i in range(3):
 				if index >= len(cards):  # or (i== 9 and j == 6):
 					break
 
@@ -186,20 +195,33 @@ def generate_a4_sheets(cards: List[Card], name):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-P", "--print", help="A4 printable sheet", action="store_true")
+	parser.add_argument("-T", "--tokens", help="Generate token sheet", action="store_true")
+	parser.add_argument("-U", "--upload", help="Upload using upload.py", action="store_true")
+	parser.add_argument("-CF", "--csv_file", help="Path to csv file", type=str)
 
 	# Read arguments from the command line
 	args = parser.parse_args()
 
-	if not os.path.exists('credentials.json'):
-		raise Exception(
-			"credentials.json not found, guide for generating : https://developers.google.com/sheets/api/quickstart/python")
+	cards = None
+	token_cards = None
+	if args.csv_file:
+		with open(args.csv_file, 'r', encoding='utf-8') as file:
+			cards = parse_list_csv(file)
+	else:
+		if not os.path.exists('credentials.json'):
+			raise Exception(
+				"credentials.json not found, guide for generating : https://developers.google.com/sheets/api/quickstart/python")
+		gc = gspread.authorize(build_cred())
+		sh = gc.open_by_key(SPREADSHEET_ID)
+		card_sheet = sh.worksheet(SPREADSHEET_SHEET)
+		cards = parse_list_gs(card_sheet)
+		if args.tokens:
+			token_sheet = sh.worksheet(SPREADSHEET_SHEET_TOKEN)
+			token_cards = parse_list_gs(card_sheet)
 
-	gc = gspread.authorize(build_cred())
-	sh = gc.open_by_key(SPREADSHEET_ID)
-	card_sheet = sh.worksheet(SPREADSHEET_SHEET)
-	token_sheet = sh.worksheet(SPREADSHEET_SHEET_TOKEN)
-	run('otakube', card_sheet, args.print)
-	run('otakube_tokens', token_sheet, args.print)
+	run('otakube', cards, args.print)
+	if args.tokens:
+		run('otakube_tokens', token_cards, args.print)
 
-	if os.path.exists('upload.py') and not args.print:
+	if args.upload and os.path.exists('upload.py') and not args.print:
 		subprocess.call(["python", "upload.py"])

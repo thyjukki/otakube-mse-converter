@@ -2,9 +2,14 @@
 __pycache__/
 export*/
 env/
+venv/
+.idea/
 build*/
 sheets*/
 otakube.mse-set
+otakube_tokens.mse-set
 *.csv
 *.zip
+*.pickle
 /credentials.json
+/upload.py
