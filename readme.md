@@ -13,7 +13,7 @@ Recomend using python virtual env for installation
 ```bash
 python -m  venv ./venv
 ./venv/Scripts/activate
-pip install -r ./requirements.txt
+pip install -r ./requirements.tx t
 ```
 
 ## Usage
@@ -35,6 +35,7 @@ It can be a good idea to first print to a pdf file to generate it, and check tha
 -P  (WIP) generate a 3x3 A4 printable file (work in progress)
 -T (WIP) Generate a token sheet, currently does not work with csv
 -U upload generated print sheets, usefull for uploading to a remote server to be used with TTS, it will run a upload.py file in the root of the project which you have to create
+-I use placeholder images downloaded from internet for cards with no images set (they will have text PLACEHOLDER overlayed)
 ```
 
 ## License

@@ -63,16 +63,16 @@ def build_cred():
 	return cred
 
 
-def generate_mse_set(cards: List[Card], name: str):
+def generate_mse_set(cards: List[Card], name: str, use_placeholder_image: bool):
 	with open('mse_header.txt', 'r', encoding='UTF-8') as read_obj:
 		full_text = read_obj.read()
 
 	for card in cards:
-		full_text += card.generate_mse_card(len(cards))
+		full_text += card.generate_mse_card(len(cards), use_placeholder_image)
 
 		if card.img_url:
 			get_img(card.img_url, card.img_name, name)
-		elif not os.path.isfile(f"build_{name}/{card.id}_{card.safe_name}_tmp.jpg"):
+		elif not os.path.isfile(f"build_{name}/{card.id}_{card.safe_name}_tmp.jpg") and use_placeholder_image:
 			name_split = card.name.split()[0].replace(',', '').replace('-', '')
 			get_img(f"https://loremflickr.com/311/228/{name_split}", f"{card.id}_{card.safe_name}_tmp", name)
 			img = Image.open(f"build_{name}/{card.id}_{card.safe_name}_tmp")
@@ -103,11 +103,11 @@ def get_img(img_url, img_name, name):
 		output.close()
 
 
-def run(name, cards: List[Card], printable: bool):
+def run(name, deck: List[Card], printable: bool, use_placeholder_image: bool):
 	if not os.path.exists(f"build_{name}"):
 		os.makedirs(f"build_{name}")
 
-	output = generate_mse_set(cards, name)
+	output = generate_mse_set(deck, name, use_placeholder_image)
 
 	with open(f"build_{name}/set", 'w', encoding='UTF-8') as file:
 		file.write(output)
@@ -125,12 +125,12 @@ def run(name, cards: List[Card], printable: bool):
 	os.system(f".\\MSE\\mse  --export {name}.mse-set \"{dir_path}\\export_{name}\\{{card.notes}}.jpg\"")
 
 	if printable:
-		generate_a4_sheets(cards, name)
+		generate_a4_sheets(deck, name)
 	else:
-		generate_tts_sheets(cards, name)
+		generate_tts_sheets(deck, name)
 
 
-def generate_tts_sheets(cards: List[Card], name):
+def generate_tts_sheets(deck: List[Card], name):
 	if os.path.exists(f"sheets_{name}"):
 		shutil.rmtree(f"./sheets_{name}", ignore_errors=True)
 
@@ -140,16 +140,16 @@ def generate_tts_sheets(cards: List[Card], name):
 	card_height = 523
 	index = 0
 	sheet = 0
-	while index < len(cards):
+	while index < len(deck):
 		new_im = Image.new('RGB', (card_width * 10, card_height * 7))
 		for j in range(7):
-			if index >= len(cards):
+			if index >= len(deck):
 				break
 			for i in range(10):
-				if index >= len(cards):  # or (i== 9 and j == 6):
+				if index >= len(deck):
 					break
 
-				card = cards[index]
+				card = deck[index]
 				im = Image.open(f"export_{name}/{card.safe_name}.jpg")
 				if card.name2:
 					im = im.rotate(90, expand=True)
@@ -177,7 +177,7 @@ def generate_a4_sheets(cards: List[Card], name):
 			if index >= len(cards):
 				break
 			for i in range(3):
-				if index >= len(cards):  # or (i== 9 and j == 6):
+				if index >= len(cards):
 					break
 
 				card = cards[index]
@@ -197,16 +197,17 @@ if __name__ == '__main__':
 	parser.add_argument("-P", "--print", help="A4 printable sheet", action="store_true")
 	parser.add_argument("-T", "--tokens", help="Generate token sheet", action="store_true")
 	parser.add_argument("-U", "--upload", help="Upload using upload.py", action="store_true")
-	parser.add_argument("-CF", "--csv_file", help="Path to csv file", type=str)
+	parser.add_argument("-I", "--use_placeholders", help="Use placeholder images", action="store_true")
+	parser.add_argument("-S", "--csv_file", help="Path to csv file", type=str)
 
 	# Read arguments from the command line
 	args = parser.parse_args()
 
-	cards = None
+	main_cards = None
 	token_cards = None
 	if args.csv_file:
 		with open(args.csv_file, 'r', encoding='utf-8') as file:
-			cards = parse_list_csv(file)
+			main_cards = parse_list_csv(file)
 	else:
 		if not os.path.exists('credentials.json'):
 			raise Exception(
@@ -214,14 +215,14 @@ if __name__ == '__main__':
 		gc = gspread.authorize(build_cred())
 		sh = gc.open_by_key(SPREADSHEET_ID)
 		card_sheet = sh.worksheet(SPREADSHEET_SHEET)
-		cards = parse_list_gs(card_sheet)
+		main_cards = parse_list_gs(card_sheet)
 		if args.tokens:
 			token_sheet = sh.worksheet(SPREADSHEET_SHEET_TOKEN)
 			token_cards = parse_list_gs(card_sheet)
 
-	run('otakube', cards, args.print)
+	run('otakube', main_cards, args.print, args.use_placeholders)
 	if args.tokens:
-		run('otakube_tokens', token_cards, args.print)
+		run('otakube_tokens', token_cards, args.print, args.use_placeholders)
 
 	if args.upload and os.path.exists('upload.py') and not args.print:
 		subprocess.call(["python", "upload.py"])

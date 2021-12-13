@@ -282,7 +282,6 @@ class Card():
 			if self.cmc and self.cmc.strip():
 				print(f"WARNING: Land {self} with CMC! ({self.cmc})")
 
-
 	def get_card_number(self, cards_count):
 		id_len = len(str(self.id))
 		total_len = len(str(cards_count))
@@ -294,9 +293,7 @@ class Card():
 		
 		return f"{'0'*diff}{self.id}/{cards_count}"
 
-
-	def generate_mse_card(self, cards_count):
-
+	def generate_mse_card(self, cards_count, use_placeholder_image):
 		text = f"""
 card:"""
 
@@ -384,10 +381,15 @@ card:"""
 			text += f"""
 	card color: {self.color}"""
 
-		text+= f"""
+		text += f"""
 	name: {self.name}
 	casting cost: {self.cmc}
-	image: {self.img_name}
+	image: """
+		if self.img_url:
+			text += f"{self.id}_{self.safe_name}"
+		elif use_placeholder_image:
+			text += f"{self.id}_{self.safe_name}_tmp.jpg"
+		text += """
 	super type: <word-list-type>{' '.join(self.super_types)}</word-list-type>
 	sub type: {get_sub_type_text(self.super_types, self.sub_types)}
 	rarity: {self.rarity}
