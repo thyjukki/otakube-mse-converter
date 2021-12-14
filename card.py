@@ -389,7 +389,7 @@ card:"""
 			text += f"{self.id}_{self.safe_name}"
 		elif use_placeholder_image:
 			text += f"{self.id}_{self.safe_name}_tmp.jpg"
-		text += """
+		text += f"""
 	super type: <word-list-type>{' '.join(self.super_types)}</word-list-type>
 	sub type: {get_sub_type_text(self.super_types, self.sub_types)}
 	rarity: {self.rarity}
