@@ -272,6 +272,9 @@ class Card():
 			self.rarity = "common"
 			print(f"WARNING: No rarirty for {self.name} ({self.id})")
 		self.creator = entry[16]
+		self.artist = entry[21]
+		if self.artist.strip():
+			self.creator = self.creator + ' // ' + self.artist
 		self.parse_picture(entry[20])
 		self.illustrator = entry[21]
 
