@@ -13,7 +13,7 @@ Recomend using python virtual env for installation
 ```bash
 python -m  venv ./venv
 ./venv/Scripts/activate
-pip install -r ./requirements.tx t
+pip install -r ./requirements.txt
 ```
 
 ## Usage
